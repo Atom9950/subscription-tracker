@@ -56,6 +56,7 @@ const subscriptionSchema = new mongoose.Schema({
         type: Date,
         validate:{
             validator: function(value){
+                 if (value === null) return true;
                 return value > this.startDate;
             },
             message: "Renewal date should be after start date"
@@ -72,25 +73,37 @@ const subscriptionSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 // Auto calculate renewalDate based on frequency and startDate
-subscriptionSchema.pre('save', function(){  // Removed 'next' parameter
-    if(!this.renewalDate && this.startDate && this.frequency){
-        const renewalPeriods = {
-            daily: 1,
-            weekly: 7,
-            monthly: 30,
-            yearly: 365,
-        }
+subscriptionSchema.pre("save", function () {
+    const renewalPeriods = {
+        daily: 1,
+        weekly: 7,
+        monthly: 30,
+        yearly: 365,
+    };
 
-        this.renewalDate = new Date(this.startDate);
-        this.renewalDate.setDate(this.startDate.getDate() + renewalPeriods[this.frequency]);
+    // ⛔ Skip auto-renewal calculation when cancelled
+    if (this.status === "cancelled") {
+        return;
     }
 
-    //Auto update status if renewal date has passed
-    if(this.renewalDate && this.renewalDate < new Date()){
+    // Auto calculate renewal date
+    if (!this.renewalDate && this.startDate && this.frequency) {
+        this.renewalDate = new Date(this.startDate);
+        this.renewalDate.setDate(
+            this.startDate.getDate() + renewalPeriods[this.frequency]
+        );
+    }
+
+    // Auto expire if date passed
+    if (
+        this.status !== "cancelled" &&
+        this.renewalDate &&
+        this.renewalDate < new Date()
+    ) {
         this.status = "expired";
     }
-    // No need to call next() - just return or let function complete
 });
+
 
 const Subscription = mongoose.model("Subscription", subscriptionSchema);
 

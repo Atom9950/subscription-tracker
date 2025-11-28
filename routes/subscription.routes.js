@@ -1,35 +1,40 @@
 import { Router } from "express";
 import authorize from "../middleware/auth.middleware.js";
-import { CreateSubscription, GetSubscription } from "../controllers/subscription.controller.js";
+import { 
+  CreateSubscription, 
+  GetSubscription, 
+  GetAllSubscriptions,
+  GetSubscriptionById,
+  ExtendSubscription,
+  CancelSubscription,
+  DeleteSubscription,
+  GetUpcomingRenewals
+} from "../controllers/subscription.controller.js";
 
 const subscriptionRouter = Router();
 
-subscriptionRouter.get("/", (req, res) => {
-  res.send({ title: "GET all subscriptions" });
-});
+// Get all subscriptions (admin/general route)
+subscriptionRouter.get("/", authorize, GetAllSubscriptions);
 
-subscriptionRouter.get("/:id", (req, res) => {
-  res.send({ title: "GET subscription by id" });
-});
+// Get upcoming renewals (should be before /:id to avoid route conflict)
+subscriptionRouter.get("/upcoming-renewals", authorize, GetUpcomingRenewals);
 
+// Get subscription by id
+subscriptionRouter.get("/:id", authorize, GetSubscriptionById);
+
+// Get subscriptions for a specific user
+subscriptionRouter.get("/user/:id", authorize, GetSubscription);
+
+// Create new subscription
 subscriptionRouter.post("/", authorize, CreateSubscription);
 
-subscriptionRouter.put("/:id/extend", (req, res) => {
-  res.send({ title: "UPDATE subscription by id" });
-});
+// Extend subscription
+subscriptionRouter.put("/:id/extend", authorize, ExtendSubscription);
 
-subscriptionRouter.delete("/:id", (req, res) => {
-  res.send({ title: "DELETE subscription by id" });
-});
+// Cancel subscription
+subscriptionRouter.put("/:id/cancel", authorize, CancelSubscription);
 
-subscriptionRouter.get("/user/:id", authorize, GetSubscription)
-
-subscriptionRouter.put("/:id/cancel", (req, res) => {
-  res.send({ title: "CANCEL subscription by id" });
-});
-
-subscriptionRouter.get("/upcoming-renewals", (req, res) => {
-  res.send({ title: "GET upcoming renewals" });
-});
+// Delete subscription
+subscriptionRouter.delete("/:id", authorize, DeleteSubscription);
 
 export default subscriptionRouter;
