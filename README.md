@@ -200,7 +200,7 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👨‍💻 Author
+## 👨‍💻 Developer
 
 **Atom9950**
 
