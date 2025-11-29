@@ -175,8 +175,7 @@ The system uses Upstash workflows to schedule and send automated email reminders
 ```json
 {
   "start": "node server.js",
-  "dev": "nodemon server.js",
-  "test": "jest"
+  "dev": "nodemon server.js"
 }
 ```
 
