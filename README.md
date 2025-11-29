@@ -196,9 +196,6 @@ Contributions are welcome! Please follow these steps:
 - Use strong JWT secrets in production
 - Keep your API keys and credentials secure
 
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 👨‍💻 Developer
 
