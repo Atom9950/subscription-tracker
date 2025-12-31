@@ -202,5 +202,3 @@ Contributions are welcome! Please follow these steps:
 **Atom9950**
 
 ---
-
-**Note**: This is backend dude! Why would you even possibly try to run it on your browser??? 💔🥀
